@@ -28,7 +28,8 @@ SELECT aircrafts_data.aircraft_code AS Код,
 FROM aircrafts_data
          JOIN seats ON aircrafts_data.aircraft_code = seats.aircraft_code
 WHERE model:: json ->> 'ru' = 'Аэробус A321-200'
-  AND seats.fare_conditions != 'Economy';
+  AND seats.fare_conditions != 'Economy'
+ORDER BY seat_no;
 
 --4.Вывести города в которых больше 1 аэропорта ( код аэропорта, аэропорт, город)
 SELECT airport_code                 AS Код_аэропорта,
