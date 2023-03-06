@@ -8,7 +8,6 @@ FROM aircrafts_data
 GROUP BY fare_conditions, model, aircrafts_data.aircraft_code
 ORDER BY model, seats.fare_conditions;
 
-
 --2.Найти 3 самых вместительных самолета (модель + кол-во мест)
 SELECT model:: json ->> 'ru' AS Модель,
        count(seats)          AS Количество_мест
@@ -17,9 +16,6 @@ FROM aircrafts_data
 GROUP BY model
 ORDER BY count(seats) DESC
 LIMIT 3;
-
-
-
 
 --3.Вывести код,модель самолета и места не эконом класса для самолета 'Аэробус A321-200' с сортировкой по местам
 SELECT aircrafts_data.aircraft_code AS Код,
@@ -84,29 +80,31 @@ WHERE concat(ticket_no, flight_id) = (SELECT concat(ticket_no, flight_id)
                                       LIMIT 1);
 
 --7.Написать DDL таблицы Customers , должны быть поля id , firstName, LastName, email , phone. Добавить ограничения на поля ( constraints) .
-create table customers
+create table if not exists customers
 (
-    id         serial
+    id         bigserial
         constraint customers_pk
             primary key,
-    first_name varchar not null,
-    last_name  varchar,
-    email      varchar,
-    phone      varchar
+    first_name varchar(32) not null,
+    last_name  varchar(32) not null,
+    email      varchar(256) default 'test@test.by'::character varying,
+    phone      varchar(13)
         constraint customers_pk2
-            unique
+            unique,
+    constraint customers_pk3
+        unique (first_name, last_name)
 );
 
 -- 8.Написать DDL таблицы Orders, должен быть id, customerId, quantity. Должен быть внешний ключ на таблицу customers + ограничения
-create table orders
+create table if not exists orders
 (
-    id          serial
+    id          bigserial
         constraint orders_pk
             primary key,
     customer_id integer
         constraint orders_customers_id_fk
             references customers,
-    quantity    integer
+    quantity    integer not null
 );
 
 -- 9. Написать 5 insert в эти таблицы
